@@ -1,0 +1,22 @@
+services:
+  nginx:
+    image: nginx:stable
+    depends_on:
+      - app
+    ports:
+      - 80:80
+    volumes:
+      - ../:/app/
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+    environment:
+      TIMEZONE: ${TIMEZONE:-Europe/Paris}
+
+  app:
+    build:
+      dockerfile: ./Dockerfile
+      context: ../
+    volumes:
+      - ../:/app
+      - ../var:/app/var
+    ports:
+      - "8000:9000"
