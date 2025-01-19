@@ -2,18 +2,55 @@
 
 namespace App\Tests\App\Service;
 
+use App\Entity\FruitsCollection;
 use App\Service\StorageService;
+use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 
 class StorageServiceTest extends TestCase
 {
-    public function testReceivingRequest(): void
+    private StorageService $storageService;
+    private EntityManagerInterface $entityManager;
+    private LoggerInterface $logger;
+    private FruitsCollection $mockFruitsCollection;
+
+    protected function setUp(): void
     {
-        $request = file_get_contents('request.json');
+        $this->entityManager = $this->createMock(EntityManagerInterface::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
 
-        $storageService = new StorageService($request);
+        $this->mockFruitsCollection = $this->createMock(FruitsCollection::class);
 
-        $this->assertNotEmpty($storageService->getRequest());
-        $this->assertIsString($storageService->getRequest());
+        $this->storageService = new StorageService(
+            $this->mockFruitsCollection,
+            $this->logger,
+            $this->entityManager
+        );
     }
+
+    public function testAddToCollectionInvalidJson(): void
+    {
+        $invalidJsonBody = '{ "name": "Bad Json"'; // Missing closing brace
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Unable to parse JSON:');
+
+        $this->storageService->addToCollection('fruits', $invalidJsonBody);
+    }
+
+    public function testAddToCollectionInvalidProduceType(): void
+    {
+        $jsonBody = json_encode([
+            'name' => 'Unknown',
+            'quantity' => 10,
+            'unit' => 'unit'
+        ]);
+
+        $result = $this->storageService->addToCollection('unknownType', $jsonBody);
+
+        $this->assertFalse($result['success']);
+        $this->assertStringContainsString('invalid produce type', $result['message']);
+    }
+
 }
