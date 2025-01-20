@@ -65,6 +65,8 @@ the work is timeboxed so there are a lot of things that are still missing :
 * Unit tests coverage
 * More code refactoring (especially in AbstractService and may be collections)
 * In order to build collections, the service consumes the local file request.json. The API route may change into POST and accept the json from the body
+* Use sprintf when creating messages rather than concatenating strings
+* add composer install execution into dockerfile
 * ...
 
 The DB used is SQLite so it doesn't need additional Docker config.
@@ -106,29 +108,29 @@ bin/console doctrine:migration:migrate
 
 #### setup hosts file
 ```bash
-127.0.0.1 http://fruits_vegtebales.local/
+127.0.0.1 http://fruits_vegetables.local/
 ```
 
 ### 🖥️ API routes
 #### Import file
 ```http request
-GET http://fruits_vegtebales.local/api/import_json
+GET http://fruits_vegetables.local/api/import_json
 ```
 #### Get fruits collection
 ```http request
-GET http://fruits_vegtebales.local/api/fruits
+GET http://fruits_vegetables.local/api/fruits
 ```
 #### Get vegetables collection
 ```http request
-GET http://fruits_vegtebales.local/api/vegetables
+GET http://fruits_vegetables.local/api/vegetables
 ```
 #### Get fruits collection with filters (filters not mandatory)
 ```http request
-GET http://fruits_vegtebales.local/api/fruits?quantity=10000&name=Kiwi&unit=kg
+GET http://fruits_vegetables.local/api/fruits?quantity=10000&name=Kiwi&unit=kg
 ```
 #### Add fruit into fruits collection
 ```http request
-PUT http://fruits_vegtebales.local/api/fruits
+PUT http://fruits_vegetables.local/api/fruits
 ```
 ```json
 {
@@ -140,7 +142,7 @@ PUT http://fruits_vegtebales.local/api/fruits
 
 #### Add vegetable into vegetables collection
 ```http request
-PUT http://fruits_vegtebales.local/api/fruits
+PUT http://fruits_vegetables.local/api/fruits
 ```
 ```json
 {

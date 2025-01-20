@@ -19,7 +19,6 @@ class ImportCollectionService extends AbstractService
 
         $fileContents = file_get_contents($filePath);
         if (false === $fileContents) {
-            //TODO: use sprintf
             throw new \RuntimeException('Unable to read file: ' . $filePath);
         }
 
